@@ -32,7 +32,7 @@
 | D-04 | Realtime | Socket.IO + **Redis 7** pub/sub (web publishes, realtime fans out to rooms) | Meets ≤ 2 s sync; scales horizontally later |
 | D-05 | UI | Tailwind CSS + shadcn/ui; **next-intl** (vi, en); guest app as PWA | Fast to build, mobile-first |
 | D-06 | Auth | Staff: username + password (Argon2id), DB-backed session in httpOnly cookie. Guest: HMAC-signed table-session token | No third-party IdP needed for pilot |
-| D-07 | Validation & quality | Zod schemas shared by client/server; Vitest (unit), Playwright (E2E) | One source of truth for contracts |
+| D-07 | Validation & quality | Zod schemas shared by client/server; Vitest (unit, integration on a real test DB, Testing Library for components), Playwright (E2E); acceptance tests written by an independent tester ([Testing Guide](../engineering/testing-guide.md)) | One source of truth for contracts; tests prove the spec, not the code |
 | D-08 | Hosting | **VPS in Singapore + Docker Compose** (web, realtime, postgres, redis, caddy); Caddy for HTTPS; images in GHCR; **GitHub Actions** CI/CD | Low cost; hosting in VN not required (D6) |
 | D-09 | Files & backup | S3-compatible object storage (Cloudflare R2; MinIO locally) for photos and DB backups | Cheap, no egress fees |
 | D-10 | Observability | Sentry (errors), pino JSON logs, `/healthz`, Uptime Kuma | Enough for pilot |
@@ -45,6 +45,7 @@
 
 - **ID:** `US-xx`, permanent, never reused. Next free ID: **US-52**.
 - **Priority:** Must / Should / Won't (MVP) (MoSCoW). **SP:** story points (Fibonacci).
+- **Workflow:** story lifecycle, Definition of Ready, PR and AI rules in [Implementation Flow](../engineering/implementation-flow.md).
 - **Definition of Done:** AC met · code reviewed · unit tests for business rules · E2E for the main flow passes · lint/typecheck green in CI · deployed to staging · vi/en strings added.
 
 | Epic | Name | Stories |
