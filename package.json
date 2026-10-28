@@ -13,15 +13,20 @@
     "test": "turbo run test",
     "build": "turbo run build",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "prepare": "husky"
   },
   "devDependencies": {
+    "@commitlint/cli": "21.2.4",
+    "@commitlint/config-conventional": "21.2.4",
     "@eslint/eslintrc": "3.3.7",
     "@eslint/js": "9.39.5",
     "@types/node": "24.19.2",
     "eslint": "9.39.5",
     "eslint-config-next": "15.5.28",
     "eslint-config-prettier": "10.1.8",
+    "husky": "9.1.7",
+    "lint-staged": "17.6.0",
     "prettier": "3.9.10",
     "turbo": "2.11.10",
     "typescript": "5.9.3",
