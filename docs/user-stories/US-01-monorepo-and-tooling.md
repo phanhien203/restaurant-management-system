@@ -13,7 +13,7 @@
 
 ## Acceptance Criteria
 
-1. Structure per D-02; Node 22 LTS pinned (`.nvmrc`, `packageManager`).
+1. Structure per D-02; Node 24 LTS pinned (`.nvmrc`, `packageManager`).
 2. TypeScript strict, ESLint, Prettier, Husky + lint-staged, Conventional Commits (commitlint).
 3. `pnpm dev | lint | typecheck | test | build` run across all workspaces via Turbo.
 4. README documents setup in ≤ 5 steps.
