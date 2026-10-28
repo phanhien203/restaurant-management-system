@@ -22,7 +22,7 @@ their stories. This is a tooling story with no business rules, so the build skip
 
 | Area | Change |
 |---|---|
-| Root | `package.json` (`packageManager: pnpm@10.x`, `engines.node: >=22 <23`, scripts `dev lint typecheck test build format`), `pnpm-workspace.yaml` (`apps/*`, `packages/*`), `turbo.json` (tasks + caching/outputs), `.nvmrc` (`22`), `.npmrc` (`engine-strict=true`), `.gitignore`, `.editorconfig`, `.gitattributes` (LF) |
+| Root | `package.json` (`packageManager: pnpm@10.x`, `engines.node: >=24 <25`, scripts `dev lint typecheck test build format`), `pnpm-workspace.yaml` (`apps/*`, `packages/*`), `turbo.json` (tasks + caching/outputs), `.nvmrc` (`24`), `.npmrc` (`engine-strict=true`), `.gitignore`, `.editorconfig`, `.gitattributes` (LF) |
 | TypeScript | `tsconfig.base.json`: `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `exactOptionalPropertyTypes` off (friction with Prisma/Zod), `moduleResolution: bundler`; each workspace extends it; `typecheck` = `tsc --noEmit` |
 | ESLint / Prettier | Root `eslint.config.mjs` (typescript-eslint `strictTypeChecked` subset: `no-explicit-any`, `ban-ts-comment` requiring description) + `eslint-config-next` for `apps/web`; `eslint-config-prettier`; `.prettierrc`, `.prettierignore` |
 | Git hooks | Husky 9 (`prepare` script), lint-staged (eslint --fix + prettier on staged files), commitlint `@commitlint/config-conventional` with `scope-enum` warning only |
@@ -40,7 +40,7 @@ Tooling story: proven by commands run from a clean checkout (tester, mode "verif
 
 | AC | Test (type · location) |
 |---|---|
-| 1. Structure per D-02; Node 22 pinned | Check · `ls apps packages` = exactly `web realtime` / `db shared ui`; `.nvmrc` = 22; `packageManager` set; `pnpm install` under Node ≠ 22 fails with engine error |
+| 1. Structure per D-02; Node 24 pinned | Check · `ls apps packages` = exactly `web realtime` / `db shared ui`; `.nvmrc` = 24; `packageManager` set; `pnpm install` under Node ≠ 24 fails with engine error |
 | 2. TS strict, ESLint, Prettier, Husky + lint-staged, commitlint | Break-it · add implicit `any` / unused-index access → `pnpm typecheck` red; add `: any` and `// @ts-ignore` without reason → `pnpm lint` red; misformatted staged file is fixed by pre-commit; commit `"fixed stuff"` rejected, `"chore(shared): x"` accepted |
 | 3. `pnpm dev / lint / typecheck / test / build` via Turbo across all workspaces | Check · each command runs a task in all 5 workspaces (Turbo summary), exits 0; second `build` is a full cache hit; `dev` serves the web page on :3000 and starts realtime; a type error in `packages/shared` fails `typecheck` of a dependent app. Unit · `packages/shared/src/*.test.ts` runs under `pnpm test` |
 | 4. README setup ≤ 5 steps | Check · follow README literally on a fresh clone (`git clone` to new dir) → dev running; count steps |
@@ -61,8 +61,8 @@ Route groups, Tailwind, shadcn, next-intl, PWA (US-05) · Docker Compose, `.env.
 
 | # | Question | Answer (proposed / confirmed) |
 |---|---|---|
-| Q1 | This machine has Node **24** and no pnpm. Pin Node 22 strictly (`engine-strict`) as AC1 says? | Confirmed (2026-10-28): yes, strict. Developer installs Node 22 (e.g. `fnm`/`nvm-windows`) and enables Corepack (`corepack enable`) before T2. Strict pinning keeps local = CI = Docker image |
-| Q2 | Versions | Confirmed (2026-10-28): Node 22 LTS, pnpm 10, Turbo 2, TypeScript 5.x, Next.js 15 (D-01, not 16), ESLint 9 flat config, Prettier 3, Husky 9, Vitest 3. Exact versions recorded in the log |
+| Q1 | Which Node version to pin? (AC1 said 22; this machine runs Node 24, no pnpm) | Confirmed (2026-10-28): Node **24** LTS, strict (`engine-strict`), AC1 changed by the owner as PO – [ADR 0001](../adr/0001-node-24-lts.md). Developer runs `corepack enable` for pnpm |
+| Q2 | Versions | Confirmed (2026-10-28, Node changed same day – see Plan Changes): Node 24 LTS, pnpm 10, Turbo 2, TypeScript 5.x, Next.js 15 (D-01, not 16), ESLint 9 flat config, Prettier 3, Husky 9, Vitest 3. Exact versions recorded in the log |
 | Q3 | Shared tooling config as workspace packages (`packages/config-*`) or at the root? | Confirmed (2026-10-28): root files. D-02 lists exactly five workspaces; root configs need no extra package |
 | Q4 | `pnpm test` before US-07 | Confirmed (2026-10-28): Vitest with `--passWithNoTests` per workspace + one real test in `packages/shared`; US-07 adds config, test DB and Playwright |
 | Q5 | Commitlint scopes | Confirmed (2026-10-28): `config-conventional`; scope list (workspaces + modules from CLAUDE.md) as a **warning**, footer `Refs: US-xx` not enforced by tooling (also used by `chore`/`fix` without a story) |
@@ -83,12 +83,14 @@ Route groups, Tailwind, shadcn, next-intl, PWA (US-05) · Docker Compose, `.env.
 
 | Date | Change | Why | Approved by |
 |---|---|---|---|
+| 2026-10-28 | Node 22 → **Node 24 LTS** (`.nvmrc`, `engines`, AC1); [ADR 0001](../adr/0001-node-24-lts.md). Switching pnpm → yarn was considered and dropped: pnpm stays (D-02 unchanged) | Node 22 reaches EOL ~04/2027, during the pilot; dev machines run Node 24. The yarn idea came from the Node 22 blocker, which this removes | phanhien (owner, as PO) |
 
 ## Progress Log
 
 | Date | Entry |
 |---|---|
 | 2026-10-28 | Plan approved by phanhien with all proposed answers (Q1: strict Node 22 pin). Next: T1. Blocker: dev machine has Node 24 and no pnpm; Node 22 + `corepack enable` needed before T2. |
+| 2026-10-28 | Plan change: Node 24 LTS instead of 22, pnpm kept (see Plan Changes, ADR 0001); story AC1 updated in its own commit. Node blocker removed. Next: `corepack enable`, then T1. |
 
 ## Test Report (tester)
 
