@@ -26,7 +26,8 @@ Tailwind, next-intl (vi, en), Vitest, Playwright. Deployed with Docker Compose o
 
 ## Commands
 
-> Available once US-01/US-02/US-07 are merged. Until then, say which checks you could not run.
+> Available since US-01: `install`, `dev`, `lint`, `typecheck`, `test`, `build`. The rest arrive with US-02 (compose,
+> `db:reset`) and US-07 (`test:e2e`); until then, say which checks you could not run.
 
 ```
 pnpm install
