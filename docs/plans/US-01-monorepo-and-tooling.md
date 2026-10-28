@@ -69,7 +69,7 @@ Route groups, Tailwind, shadcn, next-intl, PWA (US-05) · Docker Compose, `.env.
 
 ## Tasks
 
-- [ ] T1 [BE] Root workspace: `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `.nvmrc`, `.npmrc`, `.gitignore`, `.editorconfig`, `.gitattributes`
+- [x] T1 [BE] Root workspace: `package.json`, `pnpm-workspace.yaml`, `turbo.json`, `.nvmrc`, `.npmrc`, `.gitignore`, `.editorconfig`, `.gitattributes`
 - [ ] T2 [BE] Workspace skeletons (`apps/web`, `apps/realtime`, `packages/db|shared|ui`) with `dev lint typecheck test build` scripts; `pnpm install` + lockfile
 - [ ] T3 [BE] TypeScript strict base config + ESLint flat config + Prettier; whole repo lint/typecheck/format clean
 - [ ] T4 [BE] Husky + lint-staged + commitlint
