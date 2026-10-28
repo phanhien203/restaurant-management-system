@@ -1,0 +1,15 @@
+# Generated / build output
+pnpm-lock.yaml
+**/node_modules
+**/.next
+**/dist
+**/.turbo
+**/coverage
+**/next-env.d.ts
+
+# Existing hand-formatted docs: not reformatted in US-01 to keep the diff reviewable.
+# Remove an entry here (and run `pnpm format`) in a docs-only change to bring it under Prettier.
+docs/
+.claude/
+.github/
+CLAUDE.md
