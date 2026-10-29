@@ -1,6 +1,7 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "ui": "stream",
+  "globalDependencies": ["tsconfig.base.json", "tsconfig.node.json"],
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
@@ -12,6 +13,7 @@
     },
     "lint": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.mjs"],
       "outputs": []
     },
     "test": {
