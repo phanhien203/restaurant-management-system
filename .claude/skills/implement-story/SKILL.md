@@ -36,7 +36,7 @@ it with a proposed answer. Do not continue.
    (`[BE]`, `[FE]`, `[QA]`), each finishable and testable in one sitting.
 4. Show the developer a short summary and wait for approval. Apply their edits to the file.
 5. On approval: fill *Plan approved*, set status `In progress`, add the first log entry, and commit the file alone:
-   `docs(plan): $ARGUMENTS implementation plan` with footer `Refs: $ARGUMENTS`.
+   `docs(plan): add $ARGUMENTS implementation plan` with footer `Refs: $ARGUMENTS`.
 
 Only the progress file may change in this stage.
 
