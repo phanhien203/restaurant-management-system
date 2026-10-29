@@ -85,6 +85,7 @@ Route groups, Tailwind, shadcn, next-intl, PWA (US-05) · Docker Compose, `.env.
 |---|---|---|---|
 | 2026-10-28 | Node 22 → **Node 24 LTS** (`.nvmrc`, `engines`, AC1); [ADR 0001](../adr/0001-node-24-lts.md). Switching pnpm → yarn was considered and dropped: pnpm stays (D-02 unchanged) | Node 22 reaches EOL ~04/2027, during the pilot; dev machines run Node 24. The yarn idea came from the Node 22 blocker, which this removes | phanhien (owner, as PO) |
 | 2026-10-29 | Plan commit message in `implement-story` skill and `implementation-flow.md`: `docs(plan): US-xx implementation plan` → `docs(plan): add US-xx implementation plan` (1face89) | commitlint `subject-case` (config-conventional) rejects a subject starting with `US-xx` as sentence-case; kept the rule strict instead of disabling it | phanhien |
+| 2026-10-29 | Additions beyond the *Changes* table: `tsconfig.node.json` (NodeNext for realtime + packages, compiled to `dist`); devDependencies `@eslint/js`, `@eslint/eslintrc` (T3) and `globals` (B6); `ignoredBuiltDependencies` (esbuild, unrs-resolver) in `pnpm-workspace.yaml`; `turbo.json` `globalDependencies` + lint inputs (B1); root `lint:root` / `typecheck:root` Turbo tasks and a root-only `tsconfig.json` (B2, B5) | T1–T5 log entry (2026-10-28) and the B1–B6 fix-loop entries (2026-10-29) | phanhien (T1–T5 choices accepted 2026-10-29; B5/B6 "fix both now") |
 
 ## Progress Log
 
