@@ -4,7 +4,7 @@ A restaurant management system that streamlines menu management, order tracking,
 
 ## Setup
 
-1. Install **Node.js 24 LTS** (the version in `.nvmrc`; e.g. `nvm use`) and Git.
+1. Install **Node.js 24 LTS** (the version in `.nvmrc`; with nvm or nvm-windows: `nvm install 24 && nvm use 24`) and Git.
 2. Enable pnpm through Corepack (it picks the version pinned in `package.json`): `corepack enable`
 3. Clone the repository and enter it: `git clone <repo-url> && cd restaurant-management-system`
 4. Install dependencies (also installs the Git hooks): `pnpm install`
