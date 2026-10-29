@@ -17,7 +17,11 @@
       "outputs": []
     },
     "//#lint:root": {
-      "inputs": ["*.{js,mjs,cjs}", "package.json"],
+      "inputs": ["*.{js,mjs,cjs,ts,mts,cts}", "package.json", "tsconfig.json"],
+      "outputs": []
+    },
+    "//#typecheck:root": {
+      "inputs": ["*.{js,mjs,cjs,ts,mts,cts}", "package.json", "tsconfig.json"],
       "outputs": []
     },
     "test": {

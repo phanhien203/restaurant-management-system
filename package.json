@@ -9,8 +9,9 @@
   "scripts": {
     "dev": "turbo run dev",
     "lint": "turbo run lint lint:root",
-    "lint:root": "eslint \"*.{js,mjs,cjs}\"",
-    "typecheck": "turbo run typecheck",
+    "lint:root": "eslint \"*.{js,mjs,cjs,ts,mts,cts}\"",
+    "typecheck": "turbo run typecheck typecheck:root",
+    "typecheck:root": "tsc -p tsconfig.json",
     "test": "turbo run test",
     "build": "turbo run build",
     "format": "prettier --write .",
