@@ -19,7 +19,7 @@ Run from the repository root. Turborepo runs each task in every workspace (`apps
 | ------------------- | -------------------------------------------------------------------- |
 | `pnpm dev`          | Start all workspaces in watch mode (Next.js dev server on port 3000) |
 | `pnpm build`        | Production build of every workspace (`.next/`, `dist/`)              |
-| `pnpm lint`         | ESLint (root `eslint.config.mjs`) in every workspace                 |
+| `pnpm lint`         | ESLint (root `eslint.config.mjs`) in every workspace + root configs  |
 | `pnpm typecheck`    | `tsc --noEmit` in every workspace (strict mode)                      |
 | `pnpm test`         | Vitest unit tests in every workspace                                 |
 | `pnpm format`       | Format the repository with Prettier                                  |

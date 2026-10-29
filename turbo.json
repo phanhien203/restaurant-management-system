@@ -16,6 +16,10 @@
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/eslint.config.mjs"],
       "outputs": []
     },
+    "//#lint:root": {
+      "inputs": ["*.{js,mjs,cjs}", "package.json"],
+      "outputs": []
+    },
     "test": {
       "dependsOn": ["^build"],
       "outputs": []

@@ -8,7 +8,8 @@
   },
   "scripts": {
     "dev": "turbo run dev",
-    "lint": "turbo run lint",
+    "lint": "turbo run lint lint:root",
+    "lint:root": "eslint \"*.{js,mjs,cjs}\"",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
     "build": "turbo run build",
