@@ -29,3 +29,10 @@ Scope a script to one workspace with `pnpm --filter <name> <script>`, e.g. `pnpm
 
 Commits follow [Conventional Commits](https://www.conventionalcommits.org/) (`type(scope): subject`), checked by
 commitlint; staged files are linted and formatted by a pre-commit hook. Project rules and docs: see `CLAUDE.md`.
+
+## Troubleshooting
+
+- **Windows: `pnpm test` fails with `ERR_PACKAGE_IMPORT_NOT_DEFINED "#module-sync-enabled"`.** Paths inside
+  `node_modules/.pnpm` exceed the 260-character limit when the repository root is longer than about 148 characters.
+  Clone into a short path (e.g. `C:\dev\rms`) or enable long paths (`LongPathsEnabled=1`, admin, then reboot) and
+  run `pnpm install` again.
