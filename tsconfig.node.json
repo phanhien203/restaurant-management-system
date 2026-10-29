@@ -1,0 +1,12 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  // Packages whose `tsc` output is executed by plain `node` (apps/realtime and the libraries it imports).
+  // `Bundler` resolution allows extensionless relative imports, which Node's ESM loader cannot resolve,
+  // so these use NodeNext: imports must carry `.js` and the emitted dist runs as-is.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["node"]
+  }
+}

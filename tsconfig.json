@@ -1,0 +1,14 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  // Root-level tooling config files only (e.g. a future playwright.config.ts), so ESLint's project service can
+  // type-check them and `pnpm typecheck` covers them. Workspaces have their own tsconfig; none are included here.
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "types": ["node"],
+    "noEmit": true,
+    // JS configs are included (parsed, not type-checked: no checkJs) so the program is never empty while the
+    // root has no TS file; an empty `include` match fails tsc with TS18003.
+    "allowJs": true
+  },
+  "include": ["*.ts", "*.mts", "*.cts", "*.js", "*.mjs", "*.cjs"]
+}

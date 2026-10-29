@@ -54,7 +54,7 @@ Ready ──► Plan ──► Build ──► Verify ──► Review ──►
 
 Every story has `docs/plans/US-xx-<slug>.md` ([template and rules](../plans/README.md)). It is:
 
-- **the gate:** written and approved before any code changes, committed alone (`docs(plan): US-xx implementation plan`);
+- **the gate:** written and approved before any code changes, committed alone (`docs(plan): add US-xx implementation plan`);
 - **the progress tracker:** status (`Planned → In progress → In review → Done`, or `Blocked`), ticked tasks,
   dated log entries, verification results;
 - **the hand-over:** a new session (`/implement-story US-xx` again) or the other developer resumes from it without
