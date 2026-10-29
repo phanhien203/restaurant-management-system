@@ -74,8 +74,8 @@ Route groups, Tailwind, shadcn, next-intl, PWA (US-05) · Docker Compose, `.env.
 - [x] T3 [BE] TypeScript strict base config + ESLint flat config + Prettier; whole repo lint/typecheck/format clean
 - [x] T4 [BE] Husky + lint-staged + commitlint
 - [x] T5 [BE] README (≤ 5 steps) + CLAUDE.md commands note
-- [ ] T6 [QA] Verify: clean-checkout run of every command, break-it checks (AC2), README walkthrough, test report
-- [ ] Verify: lint · typecheck · test · build · dev (manual)
+- [x] T6 [QA] Verify: clean-checkout run of every command, break-it checks (AC2), README walkthrough, test report
+- [x] Verify: lint · typecheck · test · build · dev (manual)
 - [ ] `/review-story` findings fixed
 - [ ] PR opened
 
@@ -111,7 +111,7 @@ Route groups, Tailwind, shadcn, next-intl, PWA (US-05) · Docker Compose, `.env.
 
 | Check | Result |
 |---|---|
-| lint / typecheck | |
-| unit | |
+| lint / typecheck | 2026-10-29, tech lead, main checkout at 1face89+: `pnpm install --frozen-lockfile` exit 0; `pnpm lint --force` 7/7 (0 cached) exit 0; `pnpm typecheck --force` 6/6 (0 cached) exit 0; `pnpm build --force` 5/5 exit 0, 2nd `pnpm build` 5/5 cached; `pnpm format:check` exit 0 |
+| unit | `pnpm test --force` 6/6 exit 0; shared: 1 file, 2 tests passed; other workspaces have no tests yet (US-07) |
 | E2E | n/a (no UI flow; Playwright arrives with US-07) |
-| manual | |
+| manual | `pnpm dev`: `GET http://localhost:3000/` → HTTP 200 `<h1>RMS web</h1>`; log `RMS realtime started`; stopped with `taskkill /T`, :3000 free. Not run: `corepack enable`, nvm commands, macOS/Linux |
