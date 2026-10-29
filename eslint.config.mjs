@@ -2,6 +2,7 @@
 import { FlatCompat } from '@eslint/eslintrc';
 import js from '@eslint/js';
 import prettier from 'eslint-config-prettier';
+import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
 const compat = new FlatCompat({ baseDirectory: import.meta.dirname });
@@ -65,6 +66,18 @@ export default tseslint.config(
     // Plain JS config files are not part of any tsconfig project.
     files: ['**/*.{js,mjs,cjs}'],
     ...tseslint.configs.disableTypeChecked,
+  },
+  {
+    // JS here runs on Node (root tooling configs, realtime, packages). apps/web is left out: eslint-config-next
+    // already declares browser + node globals there.
+    files: ['*.{js,mjs,cjs}', 'apps/realtime/**/*.{js,mjs,cjs}', 'packages/**/*.{js,mjs,cjs}'],
+    languageOptions: { globals: globals.node },
+  },
+  {
+    files: ['**/*.cjs'],
+    languageOptions: { sourceType: 'commonjs' },
+    // `require` is the module system of a .cjs file, not a style choice.
+    rules: { '@typescript-eslint/no-require-imports': 'off' },
   },
   // Last: turn off stylistic rules that Prettier owns.
   prettier,
