@@ -8,7 +8,9 @@ Rules:
 - Written and approved **before any code change**; it is the first commit on the story branch.
 - Updated as work proceeds: tick tasks, add a progress-log entry at the end of every working session or stage.
 - Plan changes after approval are recorded under *Plan changes* (what, why, who approved), never rewritten silently.
-- Kept after merge as the record of how the story was built. The story file stays the spec; the plan never redefines AC.
+- Deleted once the story is merged and done, in its own `docs(plan)` commit on the next story branch; git history keeps
+  the record. A story that is still open (e.g. `Blocked` on part of its AC) keeps its plan. The story file stays the
+  spec; the plan never redefines AC.
 
 Status values: `Planned` → `In progress` → `In review` → `Done` (or `Blocked`, with the reason in the log).
 
