@@ -75,7 +75,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 - [x] T2 [QA] Acceptance unit tests for AC2 (red for the right reason)
 - [x] T3 [BE] `compose.dev.yml` (AC1)
 - [x] T4 [BE] Implement `parseEnv`; wire fail-fast into `web` (instrumentation) and `realtime`; load root `.env`
-- [ ] T5 [BE] README: services, env setup, troubleshooting
+- [x] T5 [BE] README: services, env setup, troubleshooting
 - [ ] T6 [QA] Verify from a clean clone: AC1 checks, fail-fast break-it checks, gap tests, bug report
 - [ ] Verify: lint · typecheck · unit · manual (`docker compose up`, `pnpm dev` with/without a variable)
 - [ ] `/review-story` findings fixed
@@ -101,6 +101,8 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | 2026-10-30 | T2 (QA): `packages/shared/src/env/env.test.ts`, 94 AC2 tests. Run: 84 fail with `Error: not implemented` (parseEnv stub), 10 pass already (2a: schema keys vs `.env.example`, no stub involved). lint + typecheck green. Open question: `NODE_ENV=` (empty) → tested as missing → default `development` per parseEnv JSDoc, but the schema alone rejects `""`, so parseEnv must normalise empty to undefined. Not committed (awaiting review). Next: T3. |
 | 2026-10-30 | T3: `compose.dev.yml` with `postgres:17.11-alpine3.24`, `redis:7.4.12-alpine3.21` and MinIO from `cgr.dev/chainguard/minio` pinned by digest (official minio/minio and quay.io images no longer pullable; owner chose Chainguard). Credentials have no defaults (`:?`), so Compose needs `.env` or `--env-file .env.example`. `up -d --wait` all healthy, Postgres 17.11, Redis 7.4.12, MinIO live 200, ports on 127.0.0.1 only; data survives `down`/`up`, wiped by `down -v`. Next: T4. |
 | 2026-10-30 | T4: `parseEnv` implemented (blank values normalised to missing, first issue per variable in schema order, no values or `cause`); shared 95/95 green. web: `instrumentation.ts` imports `src/server/env.ts` in the Node runtime and on `EnvValidationError` prints the message and `process.exit(1)`, because a throw does not stop Next 15 (`next start` kept listening and answered 500, `next dev` exited 0); `next dev` also checks in `next.config.ts` (dev phase only) since its CLI parent exits 0 whenever the server child exits. Root `.env` loaded via `process.loadEnvFile` in `next.config.ts` and `--env-file-if-exists` in realtime scripts (shell wins); `turbo.json` dev task gets `passThroughEnv` (Turbo strict mode stripped shell vars). Verified: fail-fast exit 1 naming variables, no secret in output, 200 with valid env; lint, typecheck, test, build green. Not committed. Next: T5. |
+| 2026-10-30 | T5: README setup steps (Docker, `cp .env.example .env`, compose up), local services table, env variables section (how to add one), troubleshooting (invalid env, port clash, stale credentials, Docker not running). Next: T6. |
+| 2026-10-30 | Session end. Done: T0–T5 (plan, env contract, AC2 tests 95/95 green, compose.dev.yml, env validation in web/realtime, README). Next: T6 tester verify from a clean clone, then owner's manual check of the real `.env` path (`cp .env.example .env` → compose up → `pnpm dev`). Blockers: none for AC1–AC2; AC3 waits for US-03 (Q1). |
 
 ## Test Report (tester)
 
