@@ -39,8 +39,8 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | AC | Test (type · location) |
 |---|---|
 | 1. Compose starts PostgreSQL 17, Redis 7, MinIO | QA verify (scripted, from a clean clone): `docker compose -f compose.dev.yml up -d --wait` → all 3 healthy; `SELECT version()` reports 17.x; `redis-cli INFO server` reports 7.x; MinIO `/minio/health/live` 200; data survives `down` + `up`; `down -v` wipes it. Recorded in *Test report* |
-| 2a. `.env.example` lists every variable | Unit · `packages/shared/src/env/env.test.ts`: every key of `webEnvSchema` ∪ `realtimeEnvSchema` appears in `.env.example`, and every key in `.env.example` is used by a schema or by Compose (no stale entries) |
-| 2b. env validated with Zod, fail fast | Unit · same file: valid `.env.example` values parse; missing `DATABASE_URL`, non-URL `REDIS_URL`, non-numeric port → error naming each bad variable, all at once; error text never contains a secret value. QA verify: start `web` and `realtime` with a variable removed → process exits non-zero before listening, message names the variable |
+| 2a. `.env.example` lists every variable | Unit · `packages/shared/src/env/env.test.ts`, `describe("AC2 · .env.example lists every variable")` (10 tests): schemas read exactly the planned variables (realtime: no DB/S3); every key of `webEnvSchema` ∪ `realtimeEnvSchema` appears in `.env.example`, and every key in `.env.example` is used by a schema or by Compose (no stale entries) |
+| 2b. env validated with Zod, fail fast | Unit · same file, `describe("AC2 · …")` blocks: fresh `cp .env.example .env` boots; valid configurations parse to typed values; least privilege; missing or empty variables fail fast; malformed values fail fast; all problems in one error; errors never leak secrets; parseEnv is pure. Valid `.env.example` values parse; missing `DATABASE_URL`, non-URL `REDIS_URL`, non-numeric port → error naming each bad variable, all at once; error text never contains a secret value. QA verify: start `web` and `realtime` with a variable removed → process exits non-zero before listening, message names the variable |
 | 3. `pnpm db:reset` migrates + seeds | **Deferred** to the follow-up branch after US-03 (Q1) |
 
 ## Risks
@@ -72,7 +72,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 
 - [x] T0 [BE] Remove `docs/plans/US-01-monorepo-and-tooling.md`; update the keep-after-merge rule in `docs/plans/README.md` (own commit)
 - [x] T1 [BE] Contracts: env schemas + `parseEnv` signature as stubs in `packages/shared/src/env/`; `.env.example`
-- [ ] T2 [QA] Acceptance unit tests for AC2 (red for the right reason)
+- [x] T2 [QA] Acceptance unit tests for AC2 (red for the right reason)
 - [ ] T3 [BE] `compose.dev.yml` (AC1)
 - [ ] T4 [BE] Implement `parseEnv`; wire fail-fast into `web` (instrumentation) and `realtime`; load root `.env`
 - [ ] T5 [BE] README: services, env setup, troubleshooting
@@ -95,6 +95,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | 2026-10-30 | Plan approved by phanhien (Q2–Q4 confirmed as proposed). Next: T0. |
 | 2026-10-30 | T0 done: US-01 plan removed, plans README rule updated. Next: T1. |
 | 2026-10-30 | T1 contracts ready: `@rms/shared/env` (zod 4.6.7) with `webEnvSchema`, `realtimeEnvSchema`, `EnvValidationError`, `parseEnv` stub; root `.env.example`. Next: T2. |
+| 2026-10-30 | T2 (QA): `packages/shared/src/env/env.test.ts`, 94 AC2 tests. Run: 84 fail with `Error: not implemented` (parseEnv stub), 10 pass already (2a: schema keys vs `.env.example`, no stub involved). lint + typecheck green. Open question: `NODE_ENV=` (empty) → tested as missing → default `development` per parseEnv JSDoc, but the schema alone rejects `""`, so parseEnv must normalise empty to undefined. Not committed (awaiting review). Next: T3. |
 
 ## Test Report (tester)
 
