@@ -71,7 +71,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 ## Tasks
 
 - [x] T0 [BE] Remove `docs/plans/US-01-monorepo-and-tooling.md`; update the keep-after-merge rule in `docs/plans/README.md` (own commit)
-- [ ] T1 [BE] Contracts: env schemas + `parseEnv` signature as stubs in `packages/shared/src/env/`; `.env.example`
+- [x] T1 [BE] Contracts: env schemas + `parseEnv` signature as stubs in `packages/shared/src/env/`; `.env.example`
 - [ ] T2 [QA] Acceptance unit tests for AC2 (red for the right reason)
 - [ ] T3 [BE] `compose.dev.yml` (AC1)
 - [ ] T4 [BE] Implement `parseEnv`; wire fail-fast into `web` (instrumentation) and `realtime`; load root `.env`
@@ -94,6 +94,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | 2026-10-30 | Ready check: US-01 merged (PR #1). AC3/US-03 circular dependency raised; owner chose US-03 first (Q1). Plan drafted. |
 | 2026-10-30 | Plan approved by phanhien (Q2–Q4 confirmed as proposed). Next: T0. |
 | 2026-10-30 | T0 done: US-01 plan removed, plans README rule updated. Next: T1. |
+| 2026-10-30 | T1 contracts ready: `@rms/shared/env` (zod 4.6.7) with `webEnvSchema`, `realtimeEnvSchema`, `EnvValidationError`, `parseEnv` stub; root `.env.example`. Next: T2. |
 
 ## Test Report (tester)
 
