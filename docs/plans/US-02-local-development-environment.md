@@ -73,7 +73,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 - [x] T0 [BE] Remove `docs/plans/US-01-monorepo-and-tooling.md`; update the keep-after-merge rule in `docs/plans/README.md` (own commit)
 - [x] T1 [BE] Contracts: env schemas + `parseEnv` signature as stubs in `packages/shared/src/env/`; `.env.example`
 - [x] T2 [QA] Acceptance unit tests for AC2 (red for the right reason)
-- [ ] T3 [BE] `compose.dev.yml` (AC1)
+- [x] T3 [BE] `compose.dev.yml` (AC1)
 - [ ] T4 [BE] Implement `parseEnv`; wire fail-fast into `web` (instrumentation) and `realtime`; load root `.env`
 - [ ] T5 [BE] README: services, env setup, troubleshooting
 - [ ] T6 [QA] Verify from a clean clone: AC1 checks, fail-fast break-it checks, gap tests, bug report
@@ -86,6 +86,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 
 | Date | Change | Why | Approved by |
 |---|---|---|---|
+| 2026-10-30 | MinIO image `minio/minio` → `cgr.dev/chainguard/minio` pinned by digest (still MinIO, D-09 unchanged) | Official `minio/minio` and `quay.io/minio/minio` can no longer be pulled | phanhien |
 
 ## Progress Log
 
@@ -96,6 +97,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | 2026-10-30 | T0 done: US-01 plan removed, plans README rule updated. Next: T1. |
 | 2026-10-30 | T1 contracts ready: `@rms/shared/env` (zod 4.6.7) with `webEnvSchema`, `realtimeEnvSchema`, `EnvValidationError`, `parseEnv` stub; root `.env.example`. Next: T2. |
 | 2026-10-30 | T2 (QA): `packages/shared/src/env/env.test.ts`, 94 AC2 tests. Run: 84 fail with `Error: not implemented` (parseEnv stub), 10 pass already (2a: schema keys vs `.env.example`, no stub involved). lint + typecheck green. Open question: `NODE_ENV=` (empty) → tested as missing → default `development` per parseEnv JSDoc, but the schema alone rejects `""`, so parseEnv must normalise empty to undefined. Not committed (awaiting review). Next: T3. |
+| 2026-10-30 | T3: `compose.dev.yml` with `postgres:17.11-alpine3.24`, `redis:7.4.12-alpine3.21` and MinIO from `cgr.dev/chainguard/minio` pinned by digest (official minio/minio and quay.io images no longer pullable; owner chose Chainguard). Credentials have no defaults (`:?`), so Compose needs `.env` or `--env-file .env.example`. `up -d --wait` all healthy, Postgres 17.11, Redis 7.4.12, MinIO live 200, ports on 127.0.0.1 only; data survives `down`/`up`, wiped by `down -v`. Next: T4. |
 
 ## Test Report (tester)
 

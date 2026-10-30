@@ -1,0 +1,78 @@
+# Local development dependencies (US-02): PostgreSQL 17, Redis 7, MinIO. No app containers.
+# Values come from the root `.env` (copy of `.env.example`), which Compose reads automatically.
+# Without `.env`, pass it explicitly: `docker compose -f compose.dev.yml --env-file .env.example up -d --wait`.
+# Credentials have no defaults on purpose: Postgres and MinIO only apply them when the volume is first
+# created, so a silent default could initialise the data with values that differ from DATABASE_URL / S3_*.
+# Ports are bound to 127.0.0.1 so these throwaway credentials are never reachable from the LAN.
+
+name: rms-dev
+
+services:
+  postgres:
+    image: postgres:17.11-alpine3.24
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:?copy .env.example to .env}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?copy .env.example to .env}
+      POSTGRES_DB: ${POSTGRES_DB:-rms}
+    ports:
+      - '127.0.0.1:${POSTGRES_PORT:-5432}:5432'
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      # Runs inside the container, so $$ defers expansion to the container's environment.
+      test: ['CMD-SHELL', 'pg_isready -U "$$POSTGRES_USER" -d "$$POSTGRES_DB"']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+  redis:
+    image: redis:7.4.12-alpine3.21
+    restart: unless-stopped
+    ports:
+      - '127.0.0.1:${REDIS_PORT:-6379}:6379'
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+
+  minio:
+    # Pinned by digest (resolved 2026-10-30, MinIO RELEASE.2026-10-23T20-06-51Z): the official minio/minio
+    # (Docker Hub) and quay.io/minio/minio images can no longer be pulled, and Chainguard's free tier only
+    # publishes `latest`, so the digest is the only way to pin a reproducible version.
+    image: cgr.dev/chainguard/minio:latest@sha256:3b6e40c30ecd5cea627e382ff0b82ca841f58c52294578787043ee80c8ef7c82
+    restart: unless-stopped
+    command: ['server', '/data', '--console-address', ':9001']
+    environment:
+      MINIO_ROOT_USER: ${S3_ACCESS_KEY_ID:?copy .env.example to .env}
+      MINIO_ROOT_PASSWORD: ${S3_SECRET_ACCESS_KEY:?copy .env.example to .env}
+    ports:
+      - '127.0.0.1:${MINIO_API_PORT:-9000}:9000'
+      - '127.0.0.1:${MINIO_CONSOLE_PORT:-9001}:9001'
+    volumes:
+      - minio-data:/data
+    healthcheck:
+      # The image has bash but no curl/wget/grep: send a plain HTTP GET to the liveness endpoint over
+      # bash's /dev/tcp and match the status line with bash builtins ($$ = literal $ for Compose).
+      test:
+        - CMD
+        - bash
+        - -c
+        - >-
+          exec 3<>/dev/tcp/127.0.0.1/9000 &&
+          printf 'GET /minio/health/live HTTP/1.1\r\nHost: localhost\r\nConnection: close\r\n\r\n' >&3 &&
+          read -r status <&3 && [[ "$$status" == *' 200 '* ]]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+
+volumes:
+  postgres-data:
+  redis-data:
+  minio-data:
