@@ -47,8 +47,35 @@ export type EnvSource = Readonly<Record<string, string | undefined>>;
  *   decides how to report and exit.
  */
 export function parseEnv<Schema extends z.ZodObject>(
-  _schema: Schema,
-  _source: EnvSource,
+  schema: Schema,
+  source: EnvSource,
 ): z.output<Schema> {
-  throw new Error('not implemented');
+  const variables = Object.keys(schema.shape);
+
+  // Only declared variables are handed to Zod, so unrelated ones (PATH, other services' secrets) never reach the
+  // parser or its issues. Blank values become `undefined` so they count as missing and defaults (NODE_ENV) apply.
+  const input: Record<string, string | undefined> = {};
+  for (const variable of variables) {
+    const value = source[variable];
+    input[variable] = value === undefined || value.trim() === '' ? undefined : value;
+  }
+
+  const result = schema.safeParse(input);
+  if (result.success) return result.data;
+
+  // Keep the first issue per variable: later ones are usually follow-ups of the same bad value.
+  // Zod issues carry the raw `input`, so only the message is copied and the ZodError is not attached as `cause`.
+  const firstMessage = new Map<string, string>();
+  for (const issue of result.error.issues) {
+    const head = issue.path[0];
+    const variable = typeof head === 'string' ? head : '(environment)';
+    if (!firstMessage.has(variable)) firstMessage.set(variable, issue.message);
+  }
+
+  const ordered = [...variables, ...[...firstMessage.keys()].filter((v) => !variables.includes(v))];
+  const issues: EnvIssue[] = ordered.flatMap((variable) => {
+    const message = firstMessage.get(variable);
+    return message === undefined ? [] : [{ variable, message }];
+  });
+  throw new EnvValidationError(issues);
 }

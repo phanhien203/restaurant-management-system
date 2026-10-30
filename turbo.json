@@ -31,7 +31,8 @@
     "dev": {
       "dependsOn": ["^build"],
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "passThroughEnv": ["NODE_ENV", "DATABASE_URL", "REDIS_URL", "S3_*", "REALTIME_PORT"]
     }
   }
 }

@@ -74,7 +74,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 - [x] T1 [BE] Contracts: env schemas + `parseEnv` signature as stubs in `packages/shared/src/env/`; `.env.example`
 - [x] T2 [QA] Acceptance unit tests for AC2 (red for the right reason)
 - [x] T3 [BE] `compose.dev.yml` (AC1)
-- [ ] T4 [BE] Implement `parseEnv`; wire fail-fast into `web` (instrumentation) and `realtime`; load root `.env`
+- [x] T4 [BE] Implement `parseEnv`; wire fail-fast into `web` (instrumentation) and `realtime`; load root `.env`
 - [ ] T5 [BE] README: services, env setup, troubleshooting
 - [ ] T6 [QA] Verify from a clean clone: AC1 checks, fail-fast break-it checks, gap tests, bug report
 - [ ] Verify: lint · typecheck · unit · manual (`docker compose up`, `pnpm dev` with/without a variable)
@@ -87,6 +87,8 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | Date | Change | Why | Approved by |
 |---|---|---|---|
 | 2026-10-30 | MinIO image `minio/minio` → `cgr.dev/chainguard/minio` pinned by digest (still MinIO, D-09 unchanged) | Official `minio/minio` and `quay.io/minio/minio` can no longer be pulled | phanhien |
+| 2026-10-30 | Extra env check in `next.config.ts` for `next dev` only | Next 15 `next dev` exits 0 when the server child exits, even after `process.exit(1)` in `instrumentation.ts` | phanhien |
+| 2026-10-30 | `passThroughEnv` for the Turbo `dev` task | Turbo strict env mode stripped shell variables, so `pnpm dev` reported them missing; new variables must be added there too | phanhien |
 
 ## Progress Log
 
@@ -98,6 +100,7 @@ guest-token HMAC key) to `.env.example` and the schema in the same commit.
 | 2026-10-30 | T1 contracts ready: `@rms/shared/env` (zod 4.6.7) with `webEnvSchema`, `realtimeEnvSchema`, `EnvValidationError`, `parseEnv` stub; root `.env.example`. Next: T2. |
 | 2026-10-30 | T2 (QA): `packages/shared/src/env/env.test.ts`, 94 AC2 tests. Run: 84 fail with `Error: not implemented` (parseEnv stub), 10 pass already (2a: schema keys vs `.env.example`, no stub involved). lint + typecheck green. Open question: `NODE_ENV=` (empty) → tested as missing → default `development` per parseEnv JSDoc, but the schema alone rejects `""`, so parseEnv must normalise empty to undefined. Not committed (awaiting review). Next: T3. |
 | 2026-10-30 | T3: `compose.dev.yml` with `postgres:17.11-alpine3.24`, `redis:7.4.12-alpine3.21` and MinIO from `cgr.dev/chainguard/minio` pinned by digest (official minio/minio and quay.io images no longer pullable; owner chose Chainguard). Credentials have no defaults (`:?`), so Compose needs `.env` or `--env-file .env.example`. `up -d --wait` all healthy, Postgres 17.11, Redis 7.4.12, MinIO live 200, ports on 127.0.0.1 only; data survives `down`/`up`, wiped by `down -v`. Next: T4. |
+| 2026-10-30 | T4: `parseEnv` implemented (blank values normalised to missing, first issue per variable in schema order, no values or `cause`); shared 95/95 green. web: `instrumentation.ts` imports `src/server/env.ts` in the Node runtime and on `EnvValidationError` prints the message and `process.exit(1)`, because a throw does not stop Next 15 (`next start` kept listening and answered 500, `next dev` exited 0); `next dev` also checks in `next.config.ts` (dev phase only) since its CLI parent exits 0 whenever the server child exits. Root `.env` loaded via `process.loadEnvFile` in `next.config.ts` and `--env-file-if-exists` in realtime scripts (shell wins); `turbo.json` dev task gets `passThroughEnv` (Turbo strict mode stripped shell vars). Verified: fail-fast exit 1 naming variables, no secret in output, 200 with valid env; lint, typecheck, test, build green. Not committed. Next: T5. |
 
 ## Test Report (tester)
 
